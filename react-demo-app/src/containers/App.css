@@ -1,0 +1,286 @@
+.App {
+  text-align: center;
+}
+
+*:focus {
+  outline: 0 !important;
+}
+
+.nav-title {
+  font-size: 2em;
+  padding-right: 3em !important;
+}
+
+.nav-item {
+  margin-right: 3em;
+  font-weight: 600;
+}
+
+.nav-item .blog {
+  color: #ec6f00 !important;
+}
+
+.footer {
+  padding: 1em;
+}
+
+.content {
+  background: #e8eae9;
+  padding-top: 100px;
+  padding-bottom: 100px;
+  min-height: 600px;
+}
+
+.watchlist {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.watchlist .loading-text {
+  margin-top: 1em;
+  font-weight: 500;
+}
+
+.watchlist-head {
+  text-align: left;
+  margin-bottom: 18px;
+}
+.watchlist-title {
+  font-size: 1.5em;
+  display: inline;
+}
+
+.watchlist-content {
+  max-height: 450px;
+  overflow-y: scroll;
+}
+
+
+.watchlist-head button {
+  font-size: 1em;
+  color: #ec6f00;
+  font-weight: 700;
+  background-color: #fde3ce;
+  border: none;
+  border: #ec6f00;
+  border-radius: 1em;
+  float: right;
+  padding-right: 1em;
+  padding-left: 1em;
+  padding-bottom: 4px;
+  margin-top: 4px;
+}
+
+.watchlist-head button:hover {
+  color: #fde3ce;
+  background-color: #ec6f00;
+}
+
+.watch-item {
+  display: block;
+  height: 100px;
+  width: 100%;
+  padding-top: 23px;
+  padding-bottom: 20px;
+  border: none;
+  border-radius: 0.5em;
+  background-color: white;
+  margin-top: 0.8px;
+  padding-left: 1em;
+}
+
+.watch-item:hover {
+  background-color: #F4F4F4;
+}
+
+.watch-item .symbol, .watch-item .price {
+  font-size: 1.2em;
+}
+
+.watch-item .price {
+  margin-top: 13px;
+}
+
+.watch-item .name {
+  font-size: 0.8em;
+  overflow: hidden;
+}
+
+.watch-item .remove-watch-item button {
+  color: #b82e14;
+  font-size: 1.3em;
+  border: none;
+  margin-top: 10px;
+  margin-right: 0.7em;
+  background-color: transparent;
+}
+
+.bg-black {
+  background-color: #000;
+}
+
+.text-orange {
+  color: #ec6f00;
+}
+
+.security-header .symbol,
+.security-header .name,
+.security-header .divider {
+  display: inline;
+  font-size: 2em;
+}
+
+.watchlist-button button {
+  font-size: 1.2em;
+  color: #ec6f00;
+  font-weight: 600;
+  background-color: #fde3ce;
+  border: none;
+  border-radius: 1em;
+  padding: 0.5em;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.watchlist-button button:hover {
+  color: #fde3ce;
+  background-color: #ec6f00;
+}
+
+.security-content {
+  margin-top: 80px;
+}
+
+.security-content .section {
+  margin-bottom: 45px;
+}
+
+.security-content .section-title {
+  font-size: 1.2em;
+  margin-bottom: 1em;
+}
+
+.security-content .section-box {
+  background-color: white;
+  width: 100%;
+  padding: 1.7em;
+  border-radius: 0.5em;
+}
+
+.time-range-container button {
+  width: 3em;
+  margin: 1.5em;
+  font-size: 0.9em !important;
+  color: #343a40;
+  font-weight: 700;
+  background-color: white;
+  border: none;
+  border-radius: 5em;
+  padding: 0.4em;
+}
+
+.time-range-container .selected {
+  color: white;
+  background-color: #343a40;
+}
+
+.market-details .section-box {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.market-details .eod-date {
+  display: inline;
+  font-weight: 500 !important;
+  font-size: 0.8em;
+  padding-left: 0.5em;
+}
+
+.detail-field {
+  padding-top: 3px;
+  padding-bottom: 3px;
+  font-size: 1em;
+}
+.detail-field .field-name, .detail-field .field-value {
+  display: inline;
+}
+
+.detail-field .field-name {
+  color: #343a40;
+  font-weight: 700;
+}
+
+.last-price-field {
+  text-align: left;
+  margin-bottom: 35px;
+  margin-left: 1em;
+}
+
+.last-price-field .last-price {
+  font-size: 2em;
+  display: inline;
+}
+
+.last-price-field .currency {
+  font-size: 1.2em;
+  display: inline;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+.watchlist-blank {
+  color: #343a40;
+  font-weight: 600;
+  font-size: 1.2em;
+  border: none;
+  border-radius: 0.5em;
+  background-color: #F4F4F4;
+  height: 200px;
+  padding-top: 40px;
+}
+
+.watchlist-blank button {
+  font-size: 1em;
+  color: #ec6f00;
+  font-weight: 600;
+  background-color: transparent;
+  border: none;
+  margin-top: 30px;
+}
+
+.watchlist-blank i {
+  margin-left: 10px;
+}
+
+.watchlist-blank button:hover {
+  font-weight: 700;
+  border-bottom: 2px solid #ec6f00;
+}
+
+.disclaimer {
+  margin-top: 100px;
+  font-size : 0.9em;
+}
+
+.architecture {
+  margin-bottom: 100px;
+}
+
+.github {
+  float: right;
+  font-size: 1em;
+  color: white;
+  font-weight: 600;
+  background-color: #333538;
+  border: none;
+  border-radius: 0.5em;
+  padding: 0.5em;
+  padding-left: 1em;
+  padding-right: 1em;
+  margin-right: 8em;
+  margin-bottom: 30px;
+}
+
+.github:hover {
+  color: white;
+}
