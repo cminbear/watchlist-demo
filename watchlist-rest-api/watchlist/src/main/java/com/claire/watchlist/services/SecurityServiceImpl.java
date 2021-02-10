@@ -5,15 +5,23 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.claire.watchlist.constants.WatchlistConstants;
@@ -28,6 +36,8 @@ import com.claire.watchlist.response.models.SecurityResponse;
 public class SecurityServiceImpl implements SecurityService {
 	
 	private static final Logger log = LoggerFactory.getLogger(SecurityServiceImpl.class);
+	private static RestTemplate restTemplate = new RestTemplate();
+	private static HttpEntity<String> entity = initHeader();
 	
 	@Autowired
 	private SecurityRepository securityRepository;
@@ -145,14 +155,23 @@ public class SecurityServiceImpl implements SecurityService {
 	
 	@Override
 	public MarketDataResponse getMarketDataOneWeek(String id) {
-		
-		RestTemplate restTemplate = new RestTemplate();
-		
+
 		String symbol = securityRepository.findBySecurityIdentifier(id).getSecuritySymbol();
 		String endpointForLatest = WatchlistConstants.LATEST_EOD_URL + symbol;
+		String latestDate = "";
 		
-		MarketStackResponse marketStackResponse = restTemplate.getForObject(endpointForLatest, MarketStackResponse.class);
-		String latestDate = marketStackResponse.getData().get(0).getDate();
+		try {
+			ResponseEntity<MarketStackResponse> marketStackResponse = restTemplate.exchange(endpointForLatest, HttpMethod.GET, entity, MarketStackResponse.class);
+			latestDate = marketStackResponse.getBody().getData().get(0).getDate();
+		} catch (HttpClientErrorException e) {
+			try {
+				TimeUnit.MILLISECONDS.sleep(500);
+				ResponseEntity<MarketStackResponse> marketStackResponse = restTemplate.exchange(endpointForLatest, HttpMethod.GET, entity, MarketStackResponse.class);
+				latestDate = marketStackResponse.getBody().getData().get(0).getDate();
+			} catch (InterruptedException e1) {
+				log.error("Error occured while requesting data.", e);
+			}
+		}
 		
 		SimpleDateFormat dateFormat = new SimpleDateFormat(WatchlistConstants.DATE_FORMAT);
 		dateFormat.setTimeZone(TimeZone.getTimeZone(WatchlistConstants.TIME_ZONE));
@@ -221,12 +240,22 @@ public class SecurityServiceImpl implements SecurityService {
 	private MarketDataResponse fetchMarketDataByTimeRange(String endpoint, boolean isEOD, String timeRange) {
 		
 		MarketDataResponse res = new MarketDataResponse();
-		RestTemplate restTemplate = new RestTemplate();
-		
-		MarketStackResponse marketStackResponse = restTemplate.getForObject(endpoint, MarketStackResponse.class);
-		List<DataResponse> dataList = marketStackResponse.getData();
+		List<DataResponse> dataList = new ArrayList<>();
 		List<BigDecimal> priceList = new ArrayList<>();
 		List<String> label = new ArrayList<>();
+		
+		try {
+			ResponseEntity<MarketStackResponse> marketStackResponse = restTemplate.exchange(endpoint, HttpMethod.GET, entity, MarketStackResponse.class);
+			dataList = marketStackResponse.getBody().getData();
+		} catch (HttpClientErrorException e) {
+			try {
+				TimeUnit.MILLISECONDS.sleep(500);
+				ResponseEntity<MarketStackResponse> marketStackResponse = restTemplate.exchange(endpoint, HttpMethod.GET, entity, MarketStackResponse.class);
+				dataList = marketStackResponse.getBody().getData();
+			} catch (InterruptedException e1) {
+				log.error("Error occured while requesting data.", e);
+			}
+		}
 		
 		if (isEOD) {
 			for (DataResponse data : dataList) {
@@ -251,15 +280,28 @@ public class SecurityServiceImpl implements SecurityService {
 	
 	private SecurityResponse fetchSecurityMarketData(SecurityResponse securityObj, String symbol) {
 
-		RestTemplate restTemplate = new RestTemplate();
-		
 		String latestEODEndpoint = WatchlistConstants.LATEST_EOD_URL + symbol; String
 		latestIntradayEndpoint = WatchlistConstants.LATEST_INTRADAY_URL + symbol;
 		 
-		MarketStackResponse latesEODResponse = restTemplate.getForObject(latestEODEndpoint, MarketStackResponse.class);
-		MarketStackResponse latesIntradayResponse = restTemplate.getForObject(latestIntradayEndpoint, MarketStackResponse.class);
-		DataResponse latestEODData = latesEODResponse.getData().get(0); 
-		DataResponse latestIntradayData = latesIntradayResponse.getData().get(0);
+		DataResponse latestEODData = new DataResponse();
+		DataResponse latestIntradayData = new DataResponse();
+		
+		try {
+			ResponseEntity<MarketStackResponse> latesEODResponse = restTemplate.exchange(latestEODEndpoint, HttpMethod.GET, entity, MarketStackResponse.class);
+			ResponseEntity<MarketStackResponse> latesIntradayResponse = restTemplate.exchange(latestIntradayEndpoint, HttpMethod.GET, entity, MarketStackResponse.class);
+			latestEODData = latesEODResponse.getBody().getData().get(0); 
+			latestIntradayData = latesIntradayResponse.getBody().getData().get(0);
+		} catch (HttpClientErrorException e) {
+			try {
+				TimeUnit.MILLISECONDS.sleep(500);
+				ResponseEntity<MarketStackResponse> latesEODResponse = restTemplate.exchange(latestEODEndpoint, HttpMethod.GET, entity, MarketStackResponse.class);
+				ResponseEntity<MarketStackResponse> latesIntradayResponse = restTemplate.exchange(latestIntradayEndpoint, HttpMethod.GET, entity, MarketStackResponse.class);
+				latestEODData = latesEODResponse.getBody().getData().get(0); 
+				latestIntradayData = latesIntradayResponse.getBody().getData().get(0);
+			} catch (InterruptedException e1) {
+				log.error("Error occured while requesting data.", e);
+			}
+		}
 		
 		NumberFormat priceFormat = NumberFormat.getCurrencyInstance();
 		
@@ -283,5 +325,14 @@ public class SecurityServiceImpl implements SecurityService {
 		securityObj.setDateForLatestEOD(dateFormat.format(calForEOD.getTime()));
 		
 		return securityObj;
+	}
+	
+	static private HttpEntity<String> initHeader() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+		HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+		
+		return entity;
 	}
 }

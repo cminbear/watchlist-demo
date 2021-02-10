@@ -47,6 +47,15 @@ class Watchlist extends Component {
             <div className="watchlist">
                 <div className="container">
                     <div className="row justify-content-center">
+                        <div className="col-12">
+                            <div className="instruction text-secondary">
+                                Feel free to play around! 
+                                <br />
+                                You can always restart with preset data when watchlist is empty.
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row justify-content-center">
                         <div className="col-lg-5 col-md-12 col-sm-12">
                             <div className="watchlist-head"> 
                                 <h3 className="watchlist-title text-secondary font-weight-bold">
